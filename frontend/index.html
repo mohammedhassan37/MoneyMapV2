@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="index.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+</head>
+<body>
+
+    
+  <!-- Form container for login/register -->
+  <form id="formContainer">
+    <div class="form-container">
+        <h1 id="formTitle" class="gradient-text">MoneyMap</h1>
+        <input id="username" type="text" placeholder="Username" required>
+        <input id="email" type="email" placeholder="Email" style="display:none;"> <!-- hidden by default for login -->
+        <input id="password" type="password" placeholder="Password" required>
+        <button id="formBtn" type="submit">Login</button>
+            <div class="signup-container">
+                <hr>
+                    <a href="#" id="toggleLink">Sign up</a>
+                <hr>
+            </div>
+
+        <p id="message" style="color:red;"></p> <!-- shows status/error messages -->
+    </div>
+  </form>
+
+  <script>
+      // Grab elements from the page
+      const form = document.getElementById("formContainer"); // the form
+      const toggleLink = document.getElementById("toggleLink"); // link to switch between login/register
+      const formTitle = document.getElementById("formTitle"); // heading showing Login/Register
+      const formBtn = document.getElementById("formBtn"); // submit button
+      const emailInput = document.getElementById("email"); // email input, shown only for registration
+      const message = document.getElementById("message"); // shows error/success messages
+      let isLogin = true; // tracks whether the form is in login or register mode
+
+      // Toggle between login and register
+      toggleLink.addEventListener('click', e => {
+          e.preventDefault(); // prevent page reload
+          isLogin = !isLogin;  // switch mode
+
+          if(isLogin){
+              // Show login form
+              formTitle.textContent = "MoneyMap";
+              formBtn.textContent = "Login";
+              toggleLink.textContent = "Sign up";
+              emailInput.style.display = "none"; // hide email
+          } else {
+              // Show registration form
+              formTitle.textContent = "Register";
+              formBtn.textContent = "Register";
+              toggleLink.textContent = "Login";
+              emailInput.style.display = "block"; // show email
+          }
+      });
+
+      // Handle form submission
+      form.addEventListener('submit', async e => {
+          e.preventDefault(); // prevent page reload
+          message.textContent = ""; // clear previous message
+
+          // Collect input values
+          const userData = {
+              username: document.getElementById("username").value.trim(),
+              password: document.getElementById("password").value,
+              email: emailInput.value.trim()
+          };
+
+          // Choose endpoint based on mode
+          const url = isLogin ? '/login' : '/register';
+
+          try {
+              // Send data to server
+              const res = await fetch(url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(userData)
+              });
+
+              const data = await res.json(); // parse server response
+
+              if(data.success){
+                  // If login successful, save token to localStorage
+                  if(isLogin && data.token) localStorage.setItem("token", data.token);
+
+                  message.style.color = "green";
+                  message.textContent = isLogin ? "Login successful!" : "Registration successful!";
+
+                  // Redirect to dashboard if login
+                  if(isLogin) window.location.href = "dashboard.html";
+              } else {
+                  message.style.color = "red";
+                  message.textContent = data.message || "Error occurred";
+              }
+          } catch(err){
+              console.error(err);
+              message.style.color = "red";
+              message.textContent = "Server error";
+          }
+      });
+  </script>
+</body>
+</html>
