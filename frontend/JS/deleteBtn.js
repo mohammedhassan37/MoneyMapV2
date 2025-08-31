@@ -1,4 +1,6 @@
 // Delete button handler
+import { loadTransactions, token } from './transactions.js';
+
 document.getElementById("deleteBtn").addEventListener("click", async () => {
     const checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
     const ids = Array.from(checkboxes).map(cb => cb.dataset.id);
