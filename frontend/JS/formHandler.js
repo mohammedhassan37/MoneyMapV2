@@ -2,8 +2,6 @@
 import { loadTransactions, token } from './transactions.js'; // fine if both in JS/
 
 
-
-
 const form = document.getElementById("transactionsForm");
 const message = document.getElementById("message");
 
