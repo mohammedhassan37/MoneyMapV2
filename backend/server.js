@@ -103,6 +103,28 @@ app.post('/transactions', authenticate, (req, res) => {
         res.json({ success: true, id: result.insertId });
     });
 });
+// Delete transactions
+app.delete('/transactions', authenticate, (req, res) => {
+    const { ids } = req.body;
+    console.log("Delete request received:", ids, "User:", req.userId);
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ success: false, message: "No IDs provided" });
+    }
+
+    const placeholders = ids.map(() => "?").join(",");
+    const sql = `DELETE FROM transactions WHERE id IN (${placeholders}) AND user_id = ?`;
+    const params = [...ids, req.userId];
+
+    db.query(sql, params, (err, result) => {
+        if (err) {
+            console.error("Delete error:", err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, deleted: result.affectedRows });
+    });
+});
+
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));

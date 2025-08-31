@@ -37,6 +37,9 @@
         <p id="message" style="color:red;"></p>
     </form>
 
+    <button id="deleteBtn" type="button">Delete Selected</button>
+
+
     <h2 id="transactionHead">All Transactions</h2>
     <div id="transactions">
     </div> <!-- Where transactions will appear -->
@@ -80,7 +83,7 @@
                     const row = document.createElement("tr");
                     row.innerHTML = `
                         <td>
-                            <input type="checkbox">
+                            <input type="checkbox" data-id="${t.id}">
                         </td>
                         <td><strong>${t.category}</strong></td>
                         <td>£${t.amount}</td>
@@ -148,5 +151,6 @@
             }
         });
     </script>
+    <script src="js/deleteBtn.js"></script>
 </body>
 </html>
