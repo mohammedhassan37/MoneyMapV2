@@ -24,24 +24,7 @@
             <!-- Transactions will appear here -->
         </div>
         <h2 id="h3-title">Dashboard</h2>
-        <div class="summaryBoxes">
-            <div class="summaryBox">
-                <h3>Total Balance</h3>
-                <p>$0.00</p>
-            </div>
-            <div class="summaryBox">
-                <h3>Total Income</h3>
-                <p>$0.00</p>
-            </div>
-            <div class="summaryBox">
-                <h3>Total Expenses</h3>
-                <p>$0.00</p>
-            </div>
-        </div>
-        <div id="dashboardGraph">
-            <!-- Graph placeholder -->
-            <p>Graph will go here</p>
-        </div>
+        <button id="deleteBtn" type="button">Delete Selected</button>
     </div>
 
     <!-- Transactions Section -->
@@ -57,7 +40,6 @@
             <p id="message" style="color:red;"></p>
         </form>
 
-        <button id="deleteBtn" type="button">Delete Selected</button>
 
         <h2 id="transactionHead">All Transactions</h2>
         <div id="transactions">
@@ -68,28 +50,7 @@
     <script type="module" src="JS/transactions.js"></script>
     <script type="module" src="JS/formHandler.js"></script>
     <script type="module" src="JS/deleteBtn.js"></script>
-
-    <!-- JS to switch views -->
-    <script>
-        const dashboardLink = document.getElementById('dashboardLink');
-        const transactionsLink = document.getElementById('transactionsLink');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const transactionsSection = document.getElementById('transactionsSection');
-
-        // Show dashboard by default
-        dashboardSection.style.display = 'block';
-        transactionsSection.style.display = 'none';
-
-        dashboardLink.addEventListener('click', () => {
-            dashboardSection.style.display = 'block';
-            transactionsSection.style.display = 'none';
-        });
-
-        transactionsLink.addEventListener('click', () => {
-            dashboardSection.style.display = 'none';
-            transactionsSection.style.display = 'block';
-        });
-    </script>
+    <script type="module" src="JS/switchViews.js"></script>
 
 </body>
 </html>
