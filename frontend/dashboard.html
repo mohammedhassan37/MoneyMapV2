@@ -1,53 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="dashboard.css">
     <meta charset="UTF-8">
-    <title>Transaction Manager</title>
+    <title>MoneyMap - Finance Manager</title>
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-    
+
+    <!-- Sidebar / Dashboard Container -->
     <div class="dashboardContainer">
-        <h1 id="dashLogo">MoneyMap</h1>
+        <a href=""><h1 id="dashLogo">MoneyMap</h1></a>
         <ul>
-            <li>
-                <a href="">Hey how are we doing</a>               
-            </li>
-            <li>
-                <a href="">Hey how are you doing</a>            
-            </li>
-            <li>
-                <a href="">Hey im doing great</a>
-            </li>
-             <li>
-                <a href="">Hey im doing great</a>
-            </li>
+            <li><a href="#" id="dashboardLink">Dashboard</a></li>
+            <li><a href="#" id="transactionsLink">Transactions</a></li>
+            <li><a href="#">Upcoming features</a></li>
+            <li><a href="#">Upcoming features</a></li>
         </ul>
     </div>
 
+    <!-- Dashboard Section -->
+    <div id="dashboardSection">
+        <div id="transactions">
+            <!-- Transactions will appear here -->
+        </div>
+        <h2 id="h3-title">Dashboard</h2>
+        <div class="summaryBoxes">
+            <div class="summaryBox">
+                <h3>Total Balance</h3>
+                <p>$0.00</p>
+            </div>
+            <div class="summaryBox">
+                <h3>Total Income</h3>
+                <p>$0.00</p>
+            </div>
+            <div class="summaryBox">
+                <h3>Total Expenses</h3>
+                <p>$0.00</p>
+            </div>
+        </div>
+        <div id="dashboardGraph">
+            <!-- Graph placeholder -->
+            <p>Graph will go here</p>
+        </div>
+    </div>
 
-    <form id="transactionsForm" class="transactionsForm">
-        <h3>Your financial tracker. Suited for all of your needs.</h3>
-        <input type="number" id="amount" placeholder="Enter Amount" required>
-        <input type="text" id="type" placeholder="income or expense" required>
-        <input type="text" id="category" placeholder="Category e.g., salary" required>
-        <input type="date" id="date" required>
-        <input type="text" id="description" placeholder="Description" required maxlength="25">
-        <button type="submit">Add Transaction</button>
-        <p id="message" style="color:red;"></p>
-    </form>
+    <!-- Transactions Section -->
+    <div id="transactionsSection">
+        <form id="transactionsForm" class="transactionsForm">
+            <h3 id="h3-title">Your financial tracker. Suited for all of your needs.</h3>
+            <input type="number" id="amount" placeholder="Enter Amount" required>
+            <input type="text" id="type" placeholder="income or expense" required>
+            <input type="text" id="category" placeholder="Category e.g., salary" required>
+            <input type="date" id="date" required>
+            <input type="text" id="description" placeholder="Description" required maxlength="25">
+            <button type="submit">Add Transaction</button>
+            <p id="message" style="color:red;"></p>
+        </form>
 
-    <button id="deleteBtn" type="button">Delete Selected</button>
+        <button id="deleteBtn" type="button">Delete Selected</button>
 
-
-    <h2 id="transactionHead">All Transactions</h2>
-    <div id="transactions">
-    </div> <!-- Where transactions will appear -->
+        <h2 id="transactionHead">All Transactions</h2>
+        <div id="transactions">
+            <!-- Transactions will appear here -->
+        </div>
+    </div>
 
     <script type="module" src="JS/transactions.js"></script>
     <script type="module" src="JS/formHandler.js"></script>
     <script type="module" src="JS/deleteBtn.js"></script>
 
+    <!-- JS to switch views -->
+    <script>
+        const dashboardLink = document.getElementById('dashboardLink');
+        const transactionsLink = document.getElementById('transactionsLink');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const transactionsSection = document.getElementById('transactionsSection');
+
+        // Show dashboard by default
+        dashboardSection.style.display = 'block';
+        transactionsSection.style.display = 'none';
+
+        dashboardLink.addEventListener('click', () => {
+            dashboardSection.style.display = 'block';
+            transactionsSection.style.display = 'none';
+        });
+
+        transactionsLink.addEventListener('click', () => {
+            dashboardSection.style.display = 'none';
+            transactionsSection.style.display = 'block';
+        });
+    </script>
 
 </body>
 </html>
