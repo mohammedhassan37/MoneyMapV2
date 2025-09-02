@@ -8,6 +8,8 @@ const bcrypt = require('bcrypt');     // Secure password hashing
 const jwt = require('jsonwebtoken');  // Create and verify authentication tokens
 
 dotenv.config(); // Load environment variables (DB credentials, JWT secret)
+console.log("JWT_SECRET:", process.env.JWT_SECRET);  // should print 'supersecretkey123'
+
 
 // --- Express app setup ---
 const app = express();
@@ -17,13 +19,16 @@ app.use(express.json()); // Parse JSON request bodies
 // --- PostgreSQL connection pool ---
 // Make sure you have a local PostgreSQL server running (pgAdmin) and your DB exists
 // .env variables: DB_HOST=localhost, DB_USER=your_pg_user, DB_PASSWORD=your_pg_password, DB_NAME=your_db, DB_PORT=5432
+const isProd = process.env.NODE_ENV === 'production';
+
 const db = new Pool({
-    host: process.env.DB_HOST,       // usually 'localhost' for local dev
-    user: process.env.DB_USER,       // your PostgreSQL username
-    password: process.env.DB_PASSWORD, // your PostgreSQL password
-    database: process.env.DB_NAME,   // the database you created for this project
-    port: process.env.DB_PORT        // default is 5432
+  host: isProd ? process.env.DB_HOST : 'localhost',
+  user: isProd ? process.env.DB_USER : 'postgres',
+  password: isProd ? process.env.DB_PASSWORD : 'postgres123',
+  database: isProd ? process.env.DB_NAME : 'finance_manager',
+  port: process.env.DB_PORT || 5432
 });
+
 console.log('Connected to local PostgreSQL');
 
 // --- Middleware ---
