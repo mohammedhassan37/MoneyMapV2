@@ -6,6 +6,8 @@
         // Show dashboard by default
         dashboardSection.style.display = 'block';
         transactionsSection.style.display = 'none';
+        
+
 
        function dashboardLinks(){
          dashboardLink.addEventListener('click', () => {
