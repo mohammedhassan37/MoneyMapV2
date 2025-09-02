@@ -1,26 +1,22 @@
 // --- Libraries ---
-const path = require('path');         // Helps with file and folder paths
-const express = require('express');   // Web framework for HTTP requests
-const { Pool } = require('pg');       // PostgreSQL client
-const cors = require('cors');         // Enable cross-origin requests
-const dotenv = require('dotenv');     // Load environment variables from .env
-const bcrypt = require('bcrypt');     // Secure password hashing
-const jwt = require('jsonwebtoken');  // Create and verify authentication tokens
+const path = require('path');
+const express = require('express');
+const { Pool } = require('pg');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-dotenv.config(); // Load environment variables (DB credentials, JWT secret)
-console.log("JWT_SECRET:", process.env.JWT_SECRET);  // should print 'supersecretkey123'
-
+dotenv.config();
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 // --- Express app setup ---
 const app = express();
-app.use(cors());         // Allow frontend to call backend
-app.use(express.json()); // Parse JSON request bodies
+app.use(cors());
+app.use(express.json());
 
 // --- PostgreSQL connection pool ---
-// Make sure you have a local PostgreSQL server running (pgAdmin) and your DB exists
-// .env variables: DB_HOST=localhost, DB_USER=your_pg_user, DB_PASSWORD=your_pg_password, DB_NAME=your_db, DB_PORT=5432
 const isProd = process.env.NODE_ENV === 'production';
-
 const db = new Pool({
   host: isProd ? process.env.DB_HOST : 'localhost',
   user: isProd ? process.env.DB_USER : 'postgres',
@@ -28,125 +24,109 @@ const db = new Pool({
   database: isProd ? process.env.DB_NAME : 'finance_manager',
   port: process.env.DB_PORT || 5432
 });
-
-console.log('Connected to local PostgreSQL');
+console.log('Connected to PostgreSQL');
 
 // --- Middleware ---
-// Protect routes that require authentication
 const authenticate = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) return res.status(401).json({ error: "No token provided" });
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ error: "No token provided" });
 
-    const token = authHeader.split(' ')[1];
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.id;
-        next();
-    } catch (err) {
-        console.error("JWT verification error:", err);
-        res.status(401).json({ error: "Invalid token" });
-    }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.id;
+    next();
+  } catch (err) {
+    console.error("JWT verification error:", err);
+    res.status(401).json({ error: "Invalid token" });
+  }
 };
 
-// --- Routes ---
-
-// Register a new user
+// --- API Routes ---
+// (register, login, transactions, etc. – same as before)
 app.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
-    if (!username || !email || !password) return res.status(400).json({ error: "Missing fields" });
-
-    try {
-        const hashedPassword = await bcrypt.hash(password, 10); // hash password
-        const sql = `
-            INSERT INTO users (username, email, password_hash)
-            VALUES ($1, $2, $3) RETURNING id
-        `;
-        const result = await db.query(sql, [username, email, hashedPassword]);
-        res.json({ success: true, id: result.rows[0].id });
-    } catch (err) {
-        console.error("Register error:", err);
-        res.status(500).json({ error: "Error registering user" });
-    }
+  const { username, email, password } = req.body;
+  if (!username || !email || !password) return res.status(400).json({ error: "Missing fields" });
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const sql = `INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id`;
+    const result = await db.query(sql, [username, email, hashedPassword]);
+    res.json({ success: true, id: result.rows[0].id });
+  } catch (err) {
+    console.error("Register error:", err);
+    res.status(500).json({ error: "Error registering user" });
+  }
 });
 
-// Login existing user
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ error: "Missing fields" });
+  const { username, password } = req.body;
+  if (!username || !password) return res.status(400).json({ error: "Missing fields" });
+  try {
+    const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+    if (result.rows.length === 0) return res.json({ success: false, message: 'User not found' });
 
-    try {
-        const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-        if (result.rows.length === 0) return res.json({ success: false, message: 'User not found' });
-
-        const user = result.rows[0];
-        const match = await bcrypt.compare(password, user.password_hash);
-
-        if (match) {
-            const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            res.json({ success: true, token });
-        } else {
-            res.json({ success: false, message: 'Invalid password' });
-        }
-    } catch (err) {
-        console.error("Login error:", err);
-        res.status(500).json({ error: "Error logging in" });
+    const user = result.rows[0];
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (match) {
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      res.json({ success: true, token });
+    } else {
+      res.json({ success: false, message: 'Invalid password' });
     }
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "Error logging in" });
+  }
 });
 
-// Get all transactions for authenticated user
+// Transactions routes (same as before)…
 app.get('/transactions', authenticate, async (req, res) => {
-    try {
-        const result = await db.query(
-            'SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC',
-            [req.userId]
-        );
-        res.json(result.rows);
-    } catch (err) {
-        console.error("Fetch transactions error:", err);
-        res.status(500).json({ error: "Error fetching transactions" });
-    }
+  try {
+    const result = await db.query('SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC', [req.userId]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Fetch transactions error:", err);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
 });
 
-// Add a new transaction
 app.post('/transactions', authenticate, async (req, res) => {
-    const { amount, type, category, description, date } = req.body;
-    if (!amount || !type || !category || !date)
-        return res.status(400).json({ success: false, message: "Missing required fields" });
-
-    try {
-        const sql = `
-            INSERT INTO transactions (user_id, amount, type, category, date, description)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING id
-        `;
-        const result = await db.query(sql, [req.userId, amount, type, category, date, description]);
-        res.json({ success: true, id: result.rows[0].id });
-    } catch (err) {
-        console.error("Add transaction error:", err);
-        res.status(500).json({ error: "Error adding transaction" });
-    }
+  const { amount, type, category, description, date } = req.body;
+  if (!amount || !type || !category || !date)
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  try {
+    const sql = `INSERT INTO transactions (user_id, amount, type, category, date, description) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`;
+    const result = await db.query(sql, [req.userId, amount, type, category, date, description]);
+    res.json({ success: true, id: result.rows[0].id });
+  } catch (err) {
+    console.error("Add transaction error:", err);
+    res.status(500).json({ error: "Error adding transaction" });
+  }
 });
 
-// Delete transactions
 app.delete('/transactions', authenticate, async (req, res) => {
-    const { ids } = req.body;
-    if (!ids || !Array.isArray(ids) || ids.length === 0)
-        return res.status(400).json({ success: false, message: "No IDs provided" });
-
-    const placeholders = ids.map((_, i) => `$${i + 1}`).join(',');
-    const sql = `DELETE FROM transactions WHERE id IN (${placeholders}) AND user_id = $${ids.length + 1}`;
-
-    try {
-        const result = await db.query(sql, [...ids, req.userId]);
-        res.json({ success: true, deleted: result.rowCount });
-    } catch (err) {
-        console.error("Delete transactions error:", err);
-        res.status(500).json({ success: false, error: err.message });
-    }
+  const { ids } = req.body;
+  if (!ids || !Array.isArray(ids) || ids.length === 0)
+    return res.status(400).json({ success: false, message: "No IDs provided" });
+  const placeholders = ids.map((_, i) => `$${i + 1}`).join(',');
+  const sql = `DELETE FROM transactions WHERE id IN (${placeholders}) AND user_id = $${ids.length + 1}`;
+  try {
+    const result = await db.query(sql, [...ids, req.userId]);
+    res.json({ success: true, deleted: result.rowCount });
+  } catch (err) {
+    console.error("Delete transactions error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-// Serve frontend files
+// --- Serve frontend files ---
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-// Start server
+// Serve index.html for root and SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+// --- Start server ---
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
