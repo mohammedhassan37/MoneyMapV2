@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="universial.css">
     <meta charset="UTF-8">
     <title>MoneyMap - Finance Manager</title>
     <link rel="stylesheet" href="dashboard.css">
@@ -13,8 +14,8 @@
         <ul>
             <li><a href="#" id="dashboardLink">Dashboard</a></li>
             <li><a href="#" id="transactionsLink">Transactions</a></li>
-            <li><a href="#">Upcoming features</a></li>
-            <li><a href="#">Upcoming features</a></li>
+            <li><a href="#">Unreleased</a></li>
+            <li><a href="#">unreleased</a></li>
         </ul>
     </div>
 
@@ -23,14 +24,13 @@
         <div id="transactions">
             <!-- Transactions will appear here -->
         </div>
-        <h2 id="dashboard-title">dashboard</h2>
         <button id="deleteBtn" type="button">Delete Selected</button>
     </div>
 
     <!-- Transactions Section -->
     <div id="transactionsSection">
         <form id="transactionsForm" class="transactionsForm">
-            <h3 id="transaction-title">Your financial tracker. Suited for all of your needs.</h3>
+            <h3 id="transaction-title">Add A Transaction</h3>
             <input type="number" id="amount" placeholder="Enter Amount" required>
             <input type="text" id="type" placeholder="income or expense" required>
             <input type="text" id="category" placeholder="Category e.g., salary" required>

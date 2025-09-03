@@ -1,15 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
-*
-{ 
+*{
     padding: 0;
     margin: 0;
-    font-family: Arial, sans-serif; 
+    font-family: "Roboto", sans-serif;
 }
 
-body{
-    background: pink;
-}
+
 
 .table{
     position: absolute;
@@ -18,6 +15,7 @@ body{
     left: 24%;
     border: 1px solid black;
     text-align: center;
+    padding:10px;
 }
 
 #transaction-title{
@@ -31,7 +29,7 @@ body{
     position: absolute;
     top: 20%;
     left: 34%;
-    background: rgb(143, 64, 64);
+    box-shadow: 3px 3px 3px 3px rgb(233, 233, 233);
     width: 30%;
     height: 63%;
     padding: 10px;
@@ -47,6 +45,7 @@ body{
     padding-left: 10px;
     margin-top: 23px;
     margin-left: 13px;
+    font-weight: bold;
 }
 
 .transactionsForm button{
@@ -92,12 +91,12 @@ body{
     box-shadow: 0px 1.5px 0px 0px rgb(58, 58, 193);
 }
 
-
-
 #deleteBtn{
+    background: green;
     position: absolute;
-    left: 50%;
-    top: 80%;
-    width: 100px;
-    height: 100px;
+    left: 23.8%;
+    top: 3%;
+    padding: 10px;
 }
+
+
