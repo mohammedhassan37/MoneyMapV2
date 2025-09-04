@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="universial.css">
+    
     <meta charset="UTF-8">
     <title>MoneyMap - Finance Manager</title>
     <link rel="stylesheet" href="dashboard.css">
@@ -13,8 +13,8 @@
         <a href=""><h1 id="dashLogo">MoneyMap</h1></a>
         <ul>
             <li><a href="#" id="dashboardLink">Dashboard</a></li>
-            <li><a href="#" id="transactionsLink">Transactions</a></li>
-            <li><a href="#">Unreleased</a></li>
+            <li><a href="#" id="transactionsLink">Add Transactions</a></li>
+            <li><a href="#" id="amountLink">amounts</a></li>
             <li><a href="#">unreleased</a></li>
         </ul>
     </div>
@@ -24,7 +24,7 @@
         <div id="transactions">
             <!-- Transactions will appear here -->
         </div>
-        <button id="deleteBtn" type="button">Delete Selected</button>
+        <button id="deleteBtn" type="button" class="btnStyling">Delete Selected</button>
     </div>
 
     <!-- Transactions Section -->
@@ -36,15 +36,22 @@
             <input type="text" id="category" placeholder="Category e.g., salary" required>
             <input type="date" id="date" required>
             <input type="text" id="description" placeholder="Description" required maxlength="25">
-            <button type="submit">Add Transaction</button>
+            <button type="submit" class="btnStyling">Add Transaction</button>
             <p id="message" style="color:red;"></p>
         </form>        
+    </div>
+
+    <div id="amountSection">
+        <div id="amountDisplayed">
+            <!-- display the amounts here -->
+        </div>
+        <p>amount section</p>
     </div>
 
     <script type="module" src="JS/transactions.js"></script>
     <script type="module" src="JS/formHandler.js"></script>
     <script type="module" src="JS/deleteBtn.js"></script>
     <script type="module" src="JS/switchViews.js"></script>
-
+    <script type="module" src="JS/getAmount.js"></script>
 </body>
 </html>

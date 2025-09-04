@@ -1,8 +1,8 @@
 // formHandler.js
-import { loadTransactions, token } from './transactions.js'; // fine if both in JS/
+import { loadTransactions, token } from './transactions.js';
+import { updateTotal } from './getAmount.js';
 
-
-const form = document.getElementById("transactionsForm");
+const form = document.getElementById("transactionsForm"); // ← grab it first
 const message = document.getElementById("message");
 
 form.addEventListener('submit', async e => {
@@ -38,7 +38,8 @@ form.addEventListener('submit', async e => {
             message.style.color = "green";
             message.textContent = "Transaction added!";
             form.reset();
-            loadTransactions();
+            await loadTransactions(); // refresh transactions table
+            updateTotal();            // refresh total amount
         } else {
             message.style.color = "red";
             message.textContent = data.message || "Error adding transaction";

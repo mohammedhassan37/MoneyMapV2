@@ -1,5 +1,7 @@
 // Delete button handler
 import { loadTransactions, token } from './transactions.js';
+import { updateTotal } from "./getAmount.js";
+
 
 document.getElementById("deleteBtn").addEventListener("click", async () => {
     const checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
@@ -24,6 +26,7 @@ document.getElementById("deleteBtn").addEventListener("click", async () => {
         if (data.success) {
             alert(`Deleted ${data.deleted} transaction(s).`);
             loadTransactions();
+            updateTotal();
         } else {
             alert(data.message || "Delete failed");
         }

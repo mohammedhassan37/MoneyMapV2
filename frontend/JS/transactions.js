@@ -1,5 +1,4 @@
-// transactions.js
-
+// JS/transactions.js
 export const token = localStorage.getItem("token");
 export const container = document.getElementById("transactions");
 
@@ -11,6 +10,7 @@ export async function loadTransactions() {
             headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
+
         container.innerHTML = "";
 
         const table = document.createElement("table");
@@ -39,12 +39,11 @@ export async function loadTransactions() {
         });
 
         container.appendChild(table);
-    } catch(err) {
-        console.error(err);
+    } catch (err) {
+        console.error("Error loading transactions:", err);
+        container.innerHTML = "<p style='color:red;'>Failed to load transactions</p>";
     }
 }
 
-// Run after DOM is ready
-document.addEventListener("DOMContentLoaded", () => {
-    loadTransactions();
-});
+// Run on page load
+document.addEventListener("DOMContentLoaded", loadTransactions);

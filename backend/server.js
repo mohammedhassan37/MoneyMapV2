@@ -43,6 +43,7 @@ const authenticate = (req, res, next) => {
     }
 };
 
+
 // --- Routes ---
 
 // Register a new user
@@ -138,6 +139,25 @@ app.delete('/transactions', authenticate, async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 });
+
+
+
+// get transactions total amount for specific user
+app.get('/transactions/amounts', authenticate, async (req, res) => {
+    try {
+        const result = await db.query(
+            `SELECT COALESCE(SUM(amount), 0) AS total
+             FROM transactions
+             WHERE user_id = $1`,
+            [req.userId]
+        );
+        res.json({ total: result.rows[0].total });
+    } catch (err) {
+        console.error("Fetch transaction amount error:", err);
+        res.status(500).json({ error: "Error fetching transactions amount" });
+    }
+});
+
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
