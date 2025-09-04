@@ -2,7 +2,7 @@
 import { loadTransactions, token } from './transactions.js';
 import { updateTotal } from './getAmount.js';
 
-const form = document.getElementById("transactionsForm"); // ← grab it first
+const form = document.getElementById("transactionsForm");
 const message = document.getElementById("message");
 
 form.addEventListener('submit', async e => {

@@ -1,21 +1,21 @@
+import { updateTotal } from './getAmount.js';
+
+google.charts.load('current', { packages: ['corechart'] });
+google.charts.setOnLoadCallback(drawChart);
+
 export async function drawChart() {
-    // Get the number from amountDisplayed
-    const amountEl = document.getElementById('amountDisplayed');
-    const totalIncome = parseFloat(amountEl.textContent.replace('£', '')) || 0;
+    const totalIncome = await updateTotal();
 
     const data = google.visualization.arrayToDataTable([
-        ['Task', 'Hours per Day'],
+        ['Task', 'Cash'],
         ['Income', totalIncome],
-        ['Sleep', 7]
+        ['Expenses', 7]
     ]);
 
     const options = {
-        title: 'My Daily Activities'
+        title: 'My Finances'
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('piechart'));
     chart.draw(data, options);
 }
-
-// Load Google Charts once
-google.charts.load('current', { packages: ['corechart'] });

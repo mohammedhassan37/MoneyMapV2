@@ -1,4 +1,5 @@
-// JS/transactions.js
+import { drawChart } from './drawChart.js';
+
 export const token = localStorage.getItem("token");
 export const container = document.getElementById("transactions");
 
@@ -39,6 +40,10 @@ export async function loadTransactions() {
         });
 
         container.appendChild(table);
+
+        
+        drawChart();
+
     } catch (err) {
         console.error("Error loading transactions:", err);
         container.innerHTML = "<p style='color:red;'>Failed to load transactions</p>";

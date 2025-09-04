@@ -121,3 +121,17 @@
     position: absolute;
     left: 50%;
 }
+
+#piechart{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pieChart{
+    border-radius: 10px;
+    height: 300px;
+    width: 400px;
+    box-shadow: 3px 3px 3px 3px rgb(231, 231, 231);
+    margin: 100px 0px 0px -90px;
+}
