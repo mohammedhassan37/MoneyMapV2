@@ -158,6 +158,16 @@ app.get('/transactions/amounts', authenticate, async (req, res) => {
     }
 });
 
+app.post("/logout", (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send("Logout failed");
+        }
+        res.clearCookie("connect.sid"); // clear session cookie
+        res.sendStatus(200);
+    });
+});
+
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
