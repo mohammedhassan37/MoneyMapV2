@@ -1,39 +1,38 @@
-const deleteBtn = document.getElementById("deleteBtn");
 
-deleteBtn.addEventListener("click", async () => {
-  const checkboxes = document.querySelectorAll("#transactions input[type='checkbox']:checked");
-  const idsToDelete = Array.from(checkboxes).map(cb => Number(cb.dataset.id));
+import { loadTransactions, token } from './transactions.js';
+import { updateTotal } from "./getAmount.js";
+import { drawChart } from './drawChart.js';
 
-  if (idsToDelete.length === 0) {
-    alert("Please select at least one transaction to delete");
-    return;
-  }
+document.getElementById("deleteBtn").addEventListener("click", async () => {
+    const checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+    const ids = Array.from(checkboxes).map(cb => cb.dataset.id);
 
-  try {
-    const res = await fetch("/transactions", {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("token")}` // make sure token is stored
-      },
-      body: JSON.stringify({ ids: idsToDelete })
-    });
-
-    const ct = res.headers.get("content-type") || "";
-    const payload = ct.includes("application/json") 
-      ? await res.json() 
-      : { success: false, message: await res.text() };
-
-    if (!res.ok || !payload.success) {
-      console.error("Delete failed:", payload);
-      alert(payload.message || "Delete failed");
-      return;
+    if (ids.length === 0) {
+        alert("Please select at least one transaction to delete.");
+        return;
     }
 
-    console.log("✅ Deleted:", payload);
-    if (typeof loadTransactions === "function") loadTransactions(); // refresh table
-  } catch (err) {
-    console.error(err);
-    alert("Server error while deleting");
-  }
+    try {
+        const res = await fetch("/transactions", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ ids })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            alert(`Deleted ${data.deleted} transaction(s).`);
+            loadTransactions();
+            updateTotal();
+            drawChart();
+        } else {
+            alert(data.message || "Delete failed");
+        }
+    } catch (err) {
+        console.error(err);
+        alert("Server error while deleting");
+    }
 });

@@ -8,8 +8,14 @@
 </head>
 <body>
 
-    
-  <!-- Form container for login/register -->
+   <div class="main">
+     <h1>Take control of your <span id="mainTxtSpan">Savings</span>,
+        With <span id="mainTxtSpan">MoneyMap</span> securely.
+    </h1>
+    <p class="margin">MoneyMap will paint a clear guide for you, the user to track your spending to the penny.</p>
+   </div>
+
+  <!-- Form container for login/register --> 
   <form id="formContainer">
     <div class="form-container">
         <h1 id="formTitle" class="gradient-text">MoneyMap</h1>
@@ -57,50 +63,13 @@
           }
       });
 
-      // Handle form submission
-      form.addEventListener('submit', async e => {
-          e.preventDefault(); // prevent page reload
-          message.textContent = ""; // clear previous message
+   
 
-          // Collect input values
-          const userData = {
-              username: document.getElementById("username").value.trim(),
-              password: document.getElementById("password").value,
-              email: emailInput.value.trim()
-          };
+   
+    //deletes the information inputs if the user goes back tologin page when logged in
+    </script>
 
-          // Choose endpoint based on mode
-          const url = isLogin ? '/login' : '/register';
-
-          try {
-              // Send data to server
-              const res = await fetch(url, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(userData)
-              });
-
-              const data = await res.json(); // parse server response
-
-              if(data.success){
-                  // If login successful, save token to localStorage
-                  if(isLogin && data.token) localStorage.setItem("token", data.token);
-
-                  message.style.color = "green";
-                  message.textContent = isLogin ? "Login successful!" : "Registration successful!";
-
-                  // Redirect to dashboard if login
-                  if(isLogin) window.location.href = "dashboard.html";
-              } else {
-                  message.style.color = "red";
-                  message.textContent = data.message || "Error occurred";
-              }
-          } catch(err){
-              console.error(err);
-              message.style.color = "red";
-              message.textContent = "Server error";
-          }
-      });
-  </script>
+    <script type="module" src="JS/loginFormSubmission.js"></script>
+    <script type="module" src="JS/loginInputDelete.js"></script>
 </body>
 </html>

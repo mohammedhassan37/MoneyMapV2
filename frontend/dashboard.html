@@ -1,152 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="dashboard.css">
-    <meta charset="UTF-8">
-    <title>Transaction Manager</title>
-</head>
-<body>
-    
-    <div class="dashboardContainer">
-        <h1 id="dashLogo">MoneyMap</h1>
-        <ul>
-            <li>
-                <a href="">Hey how are we doing</a>               
-            </li>
-            <li>
-                <a href="">Hey how are you doing</a>            
-            </li>
-            <li>
-                <a href="">Hey im doing great</a>
-            </li>
-             <li>
-                <a href="">Hey im doing great</a>
-            </li>
-        </ul>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MoneyMap - Finance Manager</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+
+
+    <div class="menu-toggle" id="menu-toggle">
+    ☰
     </div>
 
 
-    <form id="transactionsForm" class="transactionsForm">
-        <h3>Your financial tracker. Suited for all of your needs.</h3>
-        <input type="number" id="amount" placeholder="Enter Amount" required>
-        <input type="text" id="type" placeholder="income or expense" required>
-        <input type="text" id="category" placeholder="Category e.g., salary" required>
-        <input type="date" id="date" required>
-        <input type="text" id="description" placeholder="Description" required>
-        <button type="submit">Add Transaction</button>
-        <p id="message" style="color:red;"></p>
-    </form>
+    <!-- Sidebar / Dashboard Container -->
+    <div class="dashboardContainer">
+      <a href=""><h1 id="dashLogo">MoneyMap</h1></a>
+      <ul>
+        <li><a href="#" id="dashboardLink">Dashboard</a></li>
+        <li><a href="#" id="transactionsLink">Add Transactions</a></li>
+        <li><a href="#" id="logOut">Log out</a></li>
+      </ul>
+    </div>
 
-    <h2 id="transactionHead">All Transactions</h2>
-    <div id="transactions">
-    </div> <!-- Where transactions will appear -->
+    <!-- Dashboard Section -->
+    <div id="dashboardSection">
+      <div id="transactions">
+        <!-- Transactions will appear here -->
+      </div>
+      <button id="deleteBtn" type="button" class="btnStyling">
+        Delete Selected
+      </button>
+       
+      <div id="amountDisplayed"></div>
+      <div id="piechart" class="pieChart"></div>
+    
+    </div>
 
-    <script>
-        // Grab elements from the page
-        const container = document.getElementById("transactions"); // for showing transactions
-        const form = document.getElementById("transactionsForm"); // the input form
-        const message = document.getElementById("message"); // status/error messages
+    <!-- Transactions Section -->
+    <div id="transactionsSection">
+      <form id="transactionsForm" class="transactionsForm">
+        <h3 id="transaction-title">Add A Transaction</h3>
+        <input type="number" id="amount" placeholder="Enter Amount" required />
+        <select id="type" required class="transSelect">
+          <option value="">-- Select Type --</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+        <input type="date" id="date" required />
+        <input
+          type="text"
+          id="description"
+          placeholder="Description"
+          required
+          maxlength="25"
+        />
+        <button type="submit" class="btnStyling">Add Transaction</button>
+        <p id="message" style="color: red"></p>
+      </form>
+    </div>
 
-        const token = localStorage.getItem("token"); // get login token
-        if(!token) window.location.href = "index.html"; // redirect to login if not logged in
+   
+    
+   
+<script>
+const menuToggle = document.getElementById("menu-toggle");
+const dashboard = document.querySelector(".dashboardContainer");
+const navLinks = dashboard.querySelectorAll("a"); // grab all links inside sidebar
 
-        // Function to load all transactions from the server
-        async function loadTransactions() {
-            try {
-                // Ask server for transactions, include token for authentication
-                const res = await fetch("/transactions", {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+// Toggle when clicking the ☰ / ✖ button
+menuToggle.addEventListener("click", () => {
+  dashboard.classList.toggle("active");
+  menuToggle.textContent = dashboard.classList.contains("active") ? "✖" : "☰";
+});
 
-                const data = await res.json(); // convert response to JS object
-                container.innerHTML = ""; // clear existing content
+// Close sidebar when clicking any nav link
+navLinks.forEach(link => {
+  link.addEventListener("click", () => {
+    dashboard.classList.remove("active");
+    menuToggle.textContent = "☰"; // reset icon back to ☰
+  });
+});
 
-                // Create a table to display transactions
-                const table = document.createElement("table");
-                table.classList.add("table");
-                table.innerHTML = `
-                    <tr>
-                        <th>Select</th>
-                        <th>Category</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                    </tr>
-                `;
 
-                // Add each transaction as a row in the table
-                data.forEach(t => {
-                    const formattedDate = new Date(t.date).toLocaleDateString("en-GB");
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>
-                            <input type="checkbox">
-                        </td>
-                        <td><strong>${t.category}</strong></td>
-                        <td>£${t.amount}</td>
-                        <td><em>${formattedDate}</em></td>
-                        <td>${t.description}</td>
-                    `;
-                    table.appendChild(row);
-                });
-
-                container.appendChild(table); // show the table on the page
-            } catch(err) {
-                console.error(err); // log errors if fetching fails
-            }
-        }
-
-        loadTransactions(); // initially load transactions
-
-        // Handle form submission
-        form.addEventListener('submit', async e => {
-            e.preventDefault(); // prevent page reload
-            message.textContent = ""; // clear previous messages
-
-            // Gather input values
-            const transactionData = {
-                amount: parseFloat(document.getElementById("amount").value),
-                type: document.getElementById("type").value.trim(),
-                category: document.getElementById("category").value.trim(),
-                date: document.getElementById("date").value,
-                description: document.getElementById("description").value.trim()
-            };
-
-            // Simple validation
-            if (!transactionData.amount || !transactionData.type || !transactionData.category || !transactionData.date){
-                message.style.color = "red";
-                message.textContent = "Please fill in all required fields.";
-                return;
-            }
-
-            try {
-                // Send new transaction to server
-                const res = await fetch("/transactions", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify(transactionData)
-                });
-
-                const data = await res.json(); // parse server response
-
-                if(data.success){
-                    message.style.color = "green";
-                    message.textContent = "Transaction added!";
-                    form.reset(); // clear form
-                    loadTransactions(); // reload transactions
-                } else {
-                    message.style.color = "red";
-                    message.textContent = data.message || "Error adding transaction";
-                }
-            } catch(err){
-                console.error(err);
-                message.style.color = "red";
-                message.textContent = "Server error";
-            }
-        });
+</script>
+    
+    <script type="module" src="JS/drawChart.js"></script>
+    <script type="module" src="JS/transactions.js"></script>
+    <script type="module" src="JS/formHandler.js"></script>
+    <script type="module" src="JS/deleteBtn.js"></script>
+    <script type="module" src="JS/switchViews.js"></script>
+    <script type="module" src="JS/getAmount.js"></script>
+     <script>
+      async function logout() {
+        await fetch("/logout", { method: "POST" });
+        window.location.href = "index.html";
+      }
+      document.getElementById("logOut").addEventListener("click", logout);
     </script>
-</body>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+
+    
+  </body>
 </html>
