@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # MoneyMap
 ### Finance Manager visualized to see expenses.
 ---
@@ -255,13 +255,3 @@ If any one of you has any questions, please contact me!
 - **Linkedin**: https://www.linkedin.com/in/mohammed-hassan-b92826290/
 - **Email**: mohammedhassan37@outlook.com
 
-
-
-
-
-
-
-
-
-
->>>>>>> 17354136ef347082c5da280d656738dbd72471e4
