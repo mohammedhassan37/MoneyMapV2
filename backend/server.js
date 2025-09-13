@@ -18,28 +18,25 @@ app.use(express.json()); // Parse JSON request bodies
 // --- PostgreSQL connection pool ---
 // Make sure you have a local PostgreSQL server running (pgAdmin) and your DB exists
 // .env variables: DB_HOST=localhost, DB_USER=your_pg_user, DB_PASSWORD=your_pg_password, DB_NAME=your_db, DB_PORT=5432
+const isRender = process.env.DB_HOST.includes("render.com");
+
 const db = new Pool({
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: isRender ? { rejectUnauthorized: false } : false
 });
 
 
 
 
-db.connect()
-  .then(() => console.log("Connected to Render Postgres!"))
-  .catch(err => console.error("Render Postgres connection error:", err));
-
 
 
 
 // --- Middleware ---
+
 // Protect routes that require authentication
 const authenticate = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -58,17 +55,6 @@ const authenticate = (req, res, next) => {
 
 
 // --- Routes ---
-
-app.get("/test-db", async (req, res) => {
-  try {
-    const result = await db.query("SELECT * FROM users LIMIT 1;");
-    res.json({ message: "Database connected!", data: result.rows });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Database connection failed" });
-  }
-});
-
 
 // Register a new user
 app.post('/register', async (req, res) => {
