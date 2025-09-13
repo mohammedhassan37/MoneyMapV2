@@ -13,8 +13,19 @@ export async function drawChart() {
     ]);
 
     const options = {
-        title: 'Your Finances'
-    };
+  title: 'Your Finances',
+  titleTextStyle: {
+    fontSize: 30,   // title size
+    bold: true
+  },
+  legend: {
+    textStyle: { fontSize: 20 }  // legend text size
+  },
+  pieSliceTextStyle: {
+    fontSize: 18   // labels on the slices
+  }
+};
+
 
     const chart = new google.visualization.PieChart(document.getElementById('piechart'));
     chart.draw(data, options);
