@@ -13,7 +13,7 @@ export async function drawChart() {
     ]);
 
     const options = {
-        title: 'My Finances'
+        title: 'Your Finances'
     };
 
     const chart = new google.visualization.PieChart(document.getElementById('piechart'));
