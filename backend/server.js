@@ -28,7 +28,10 @@ const db = new Pool({
 
 
 
-console.log('Connected to local PostgreSQL');
+db.connect()
+  .then(() => console.log("Connected to Render Postgres!"))
+  .catch(err => console.error("Render Postgres connection error:", err));
+
 
 
 
