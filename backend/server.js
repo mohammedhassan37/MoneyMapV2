@@ -31,10 +31,6 @@ const db = new Pool({
 
 
 
-
-
-
-
 // --- Middleware ---
 
 // Protect routes that require authentication
@@ -76,7 +72,6 @@ app.post('/register', async (req, res) => {
 });
 
 // Login existing user
-// Login existing user
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) 
@@ -102,8 +97,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: "Error logging in" });
     }
 });
-
-
 
 // Get all transactions for authenticated user
 app.get('/transactions', authenticate, async (req, res) => {
@@ -158,8 +151,6 @@ app.delete('/transactions', authenticate, async (req, res) => {
     }
 });
 
-
-
 // get transactions totals for specific user, separated by income and expenses
 app.get('/transactions/amounts', authenticate, async (req, res) => {
     try {
@@ -178,17 +169,10 @@ app.get('/transactions/amounts', authenticate, async (req, res) => {
     }
 });
 
-
-
-
-
-
 app.post("/logout", (req, res) => {
   res.clearCookie("token"); // only if you stored JWT in cookies
   res.sendStatus(200);
 });
-
-
 
 // Serve frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
