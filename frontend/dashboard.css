@@ -214,7 +214,7 @@ height: 45px;
     .pieChart{
         font-size: 30px;
         top: 14.5%;
-        left: 15%;
+        left: 12%;
         height: 30%;
         width: 80%;
     }
@@ -232,7 +232,7 @@ height: 45px;
     .transactionsForm{
         
         top: 49%;
-        left: 15%;
+        left: 12%;
         height: 25%;
         width: 77.9%;
     }
@@ -250,14 +250,14 @@ height: 45px;
     #deleteBtn{
         width: 50%;
        top: 78%;
-       left: 15%;
+       left: 12%;
     }
 
     .table{
         font-size: 30px;
         width: 80%;
-       margin-top: 1380px;
-       margin-left: 200px;
+       margin-top: 1420px;
+       margin-left: 140px;
     }
 
     .dashboardContainer {
