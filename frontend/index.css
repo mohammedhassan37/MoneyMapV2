@@ -139,6 +139,7 @@ html, body {
    @media (max-width:800px){
 
     .main{
+      
       top: 27%;
       font-size: 15px;
       left: 60%;
@@ -150,7 +151,7 @@ html, body {
      
       width: 40%;
       height: 35%;
-      top: 59%;
+      top: 63%;
       left: 50%;
     }
 
