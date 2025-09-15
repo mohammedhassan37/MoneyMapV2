@@ -139,7 +139,7 @@ html, body {
    @media (max-width:800px){
 
     .main{
-      top: 28%;
+      top: 27%;
       font-size: 15px;
       left: 60%;
       width: 75%;
@@ -151,12 +151,14 @@ html, body {
       width: 40%;
       height: 35%;
       top: 59%;
-      left: 55%;
+      left: 50%;
     }
 
     #formTitle{
       font-size: 25px;
     }
+
+   
   }
   
 
